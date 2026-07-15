@@ -70,3 +70,30 @@ export const quickActions = [
     href: "/bookmarks",
   },
 ];
+
+export const HERO_STATS = [
+  {
+    id: 1,
+    title: "Study Time",
+    value: "3h 20m",
+    color: "blue",
+  },
+  {
+    id: 2,
+    title: "Questions",
+    value: "125",
+    color: "green",
+  },
+  {
+    id: 3,
+    title: "Accuracy",
+    value: "92%",
+    color: "orange",
+  },
+  {
+    id: 4,
+    title: "Current Streak",
+    value: "18 Days",
+    color: "red",
+  },
+];
