@@ -5,6 +5,7 @@ import {
   WelcomeBanner,
   HeroStats,
   DashboardGrid,
+  QuickActionsGrid,
 } from "@/components/dashboard";
 
 export default function HomePage() {
@@ -17,6 +18,10 @@ export default function HomePage() {
           <WelcomeBanner />
 
           <HeroStats />
+
+          <DashboardGrid />
+
+          <QuickActionsGrid />
 
           <DashboardGrid />
 
