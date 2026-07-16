@@ -14,12 +14,9 @@ export default function Sidebar() {
 
       <div className="flex items-center gap-3 p-6 border-b dark:border-slate-800">
 
-        <Image
-          src="/logo/logo.png"
-          width={55}
-          height={55}
-          alt="TNPSC MASTER"
-        />
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-xl font-bold text-white">
+        TM
+        </div>
 
         <div>
 
