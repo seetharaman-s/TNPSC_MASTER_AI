@@ -1,18 +1,42 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import PDFViewer from "@/components/pdf/PDFViewer";
 
-import { PDFViewer } from "@/components/pdf";
+interface Book {
+  id: number;
+  title: string;
+  pdf_url: string;
+}
 
 export default function ReaderPage() {
-  return (
-    <main className="mx-auto max-w-7xl p-8">
-      <h1 className="mb-8 text-4xl font-bold">
-        📖 TNPSC PDF Reader
-      </h1>
+  const { id } = useParams();
+  const [book, setBook] = useState<Book | null>(null);
 
+  useEffect(() => {
+    async function loadBook() {
+      const res = await fetch(`http://127.0.0.1:8000/books/${id}`);
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setBook(data);
+    }
+
+    loadBook();
+  }, [id]);
+
+  if (!book) {
+    return <div className="p-8">Loading...</div>;
+  }
+
+  return (
+    <div className="h-screen w-full">
       <PDFViewer
-        file="/pdfs/tamil6.pdf"
+        file={`http://127.0.0.1:8000${book.pdf_url}`}
+        title={book.title}
       />
-    </main>
+    </div>
   );
 }

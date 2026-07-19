@@ -1,0 +1,1 @@
+export { default as MotivationCard } from "./MotivationCard";

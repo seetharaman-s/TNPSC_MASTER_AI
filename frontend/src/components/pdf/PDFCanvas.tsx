@@ -1,11 +1,44 @@
 "use client";
 
-export default function PDFCanvas() {
+import { Document, Page } from "react-pdf";
+
+interface PDFCanvasProps {
+  file: string;
+  page: number;
+  scale: number;
+  onLoadSuccess: ({
+    numPages,
+  }: {
+    numPages: number;
+  }) => void;
+}
+
+export default function PDFCanvas({
+  file,
+  page,
+  scale,
+  onLoadSuccess,
+}: PDFCanvasProps) {
   return (
-    <div className="mt-6 flex h-[900px] items-center justify-center rounded-2xl border bg-slate-100">
-      <h2 className="text-2xl text-slate-500">
-        PDF Canvas
-      </h2>
+    <div className="flex-1 overflow-auto flex justify-center bg-slate-200 p-6">
+
+      <Document
+        file={file}
+        loading={
+          <div className="text-center py-10">
+            Loading PDF...
+          </div>
+        }
+        onLoadSuccess={onLoadSuccess}
+      >
+        <Page
+          pageNumber={page}
+          scale={scale}
+          renderTextLayer
+          renderAnnotationLayer
+        />
+      </Document>
+
     </div>
   );
 }

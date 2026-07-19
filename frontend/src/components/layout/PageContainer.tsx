@@ -1,21 +1,17 @@
+"use client";
+
 import { ReactNode } from "react";
 
-interface Props {
+interface PageContainerProps {
   children: ReactNode;
 }
 
 export default function PageContainer({
   children,
-}: Props) {
-
+}: PageContainerProps) {
   return (
-
-    <div className="mx-auto max-w-7xl p-6">
-
+    <div className="max-w-7xl mx-auto px-6 py-6">
       {children}
-
     </div>
-
   );
-
 }

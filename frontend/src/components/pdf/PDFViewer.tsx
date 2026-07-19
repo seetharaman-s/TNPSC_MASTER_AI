@@ -1,44 +1,93 @@
 "use client";
 
 import { useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
 
-import PDFToolbar from "./PDFToolbar";
-import PDFCanvas from "./PDFCanvas";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 
-interface Props {
-  file: string;
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+
+interface PDFViewerProps {
+  pdfUrl: string;
 }
 
-export default function PDFViewer({
-  file,
-}: Props) {
-  const [page, setPage] = useState(1);
+export default function PDFViewer({ pdfUrl }: PDFViewerProps) {
+  const [numPages, setNumPages] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [scale, setScale] = useState(1.2);
+  const [bookmarkedPages, setBookmarkedPages] = useState<number[]>([]);
+  function onDocumentLoadSuccess({
+    numPages,
+  }: {
+    numPages: number;
+  }) {
+    setNumPages(numPages);
+  }
+  
+  function toggleBookmark() {
+  setBookmarkedPages((prev) =>
+    prev.includes(pageNumber)
+      ? prev.filter((p) => p !== pageNumber)
+      : [...prev, pageNumber]
+  );
+  }
 
-  const totalPages = 250;
+  
 
   return (
-    <div>
+    <div className="bg-white rounded-xl shadow p-4">
 
-      <PDFToolbar
-        page={page}
-        total={totalPages}
-        previous={() =>
-          setPage((p) => Math.max(1, p - 1))
-        }
-        next={() =>
-          setPage((p) =>
-            Math.min(totalPages, p + 1)
-          )
-        }
-      />
+      <div className="flex gap-2 mb-4 flex-wrap">
 
-      <PDFCanvas />
+        <button
+          onClick={() =>
+            setPageNumber((p) => Math.max(1, p - 1))
+          }
+          className="px-4 py-2 bg-gray-200 rounded"
+        >
+          Previous
+        </button>
 
-      <div className="mt-4 text-sm text-slate-500">
-        Current PDF:
-        {" "}
-        {file}
+        <button
+          onClick={() =>
+            setPageNumber((p) => Math.min(numPages, p + 1))
+          }
+          className="px-4 py-2 bg-gray-200 rounded"
+        >
+          Next
+        </button>
+
+        <button
+          onClick={() => setScale((s) => s + 0.2)}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          +
+        </button>
+
+        <button
+          onClick={() => setScale((s) => Math.max(0.5, s - 0.2))}
+          className="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          -
+        </button>
+
+        <span className="ml-auto font-semibold">
+          Page {pageNumber} / {numPages}
+        </span>
+
       </div>
+
+      <Document
+        file={pdfUrl}
+        onLoadSuccess={onDocumentLoadSuccess}
+        loading="Loading PDF..."
+      >
+        <Page
+          pageNumber={pageNumber}
+          scale={scale}
+        />
+      </Document>
 
     </div>
   );

@@ -1,43 +1,29 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { Book } from "@/types/book";
 
-interface BookCardProps {
-  book: Book;
-}
-
-export default function BookCard({ book }: BookCardProps) {
+export default function BookCard({ book }: { book: any }) {
   return (
-    <Link href={`/books/${book.id}`}>
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-md transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900">
-        <div className="relative h-60 w-full overflow-hidden rounded-t-3xl">
-          <Image
-            src={book.cover}
-            alt={book.title}
-            fill
-            className="object-cover"
-          />
-        </div>
+    <Link
+      href={`/books/${book.id}`}
+      className="bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden"
+    >
+      <img
+        src={book.cover_image || "/images/book-placeholder.png"}
+        alt={book.title}
+        className="h-56 w-full object-cover"
+      />
 
-        <div className="p-4">
-          <h3 className="text-lg font-bold">{book.title}</h3>
+      <div className="p-4">
 
-          <p className="mt-1 text-sm text-slate-500">
-            {book.subject}
-          </p>
+        <h3 className="font-bold line-clamp-2">
+          {book.title}
+        </h3>
 
-          <div className="mt-4 flex items-center justify-between">
-            <span className="rounded-lg bg-blue-100 px-3 py-1 text-xs text-blue-700">
-              Std {book.standard}
-            </span>
+        <p className="text-sm text-gray-500 mt-2">
+          {book.subject}
+        </p>
 
-            <span className="text-sm text-slate-500">
-              {book.medium}
-            </span>
-          </div>
-        </div>
       </div>
     </Link>
   );

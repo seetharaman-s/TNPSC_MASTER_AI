@@ -1,9 +1,13 @@
-export { default as WelcomeBanner } from "./banner/WelcomeBanner";
-export { default as HeroStats } from "./banner/HeroStats";
+import Dashboard from "@/components/dashboard/Dashboard";
 
-export { default as DailyMotivationCard } from "./motivation/DailyMotivationCard";
-export { default as InterestingFactCard } from "./facts/InterestingFactCard";
+export default function DashboardPage() {
+  return <Dashboard/>;
+}
 
-export { default as DashboardGrid } from "./cards/DashboardGrid";
+export { default as Dashboard } from "./Dashboard";
 
-export { default as QuickActionsGrid } from "./quick-actions/QuickActionsGrid";
+import Dashboard from "@/components/dashboard/Dashboard";
+
+export default function HomePage() {
+  return <Dashboard />;
+}

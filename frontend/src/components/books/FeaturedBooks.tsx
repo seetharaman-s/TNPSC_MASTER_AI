@@ -1,14 +1,19 @@
-import { BOOKS } from "@/constants/books";
+"use client";
+
 import BookGrid from "./BookGrid";
 
-export default function FeaturedBooks() {
+export default function FeaturedBooks({
+  books,
+}: {
+  books: any[];
+}) {
   return (
-    <section className="mt-12">
-      <h2 className="mb-6 text-2xl font-bold">
+    <>
+      <h2 className="text-2xl font-bold mb-5">
         ⭐ Featured Books
       </h2>
 
-      <BookGrid books={BOOKS.slice(0, 4)} />
-    </section>
+      <BookGrid books={books} />
+    </>
   );
 }

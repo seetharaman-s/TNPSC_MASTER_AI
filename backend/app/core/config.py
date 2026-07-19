@@ -1,6 +1,20 @@
-from dotenv import load_dotenv
-import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+class Settings(BaseSettings):
+
+    # Database
+    DATABASE_URL: str
+
+    # JWT Authentication
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore",
+    )
+
+
+settings = Settings()

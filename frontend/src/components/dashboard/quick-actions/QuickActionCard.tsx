@@ -1,29 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { LucideIcon } from "lucide-react";
-import { AppCard } from "@/components/ui/cards";
-
-interface QuickActionCardProps {
-  title: string;
-  href: string;
-  icon: LucideIcon;
-}
 
 export default function QuickActionCard({
-  title,
-  href,
-  icon: Icon,
-}: QuickActionCardProps) {
-  return (
-    <Link href={href}>
-      <AppCard className="flex cursor-pointer flex-col items-center justify-center gap-4 text-center hover:scale-[1.03]">
-        <div className="rounded-2xl bg-blue-100 p-4 dark:bg-blue-900/20">
-          <Icon size={30} className="text-blue-600" />
-        </div>
+  item,
+}: {
+  item: any;
+}) {
+  const Icon = item.icon;
 
-        <h3 className="font-semibold">{title}</h3>
-      </AppCard>
+  return (
+    <Link
+      href={item.href}
+      className="rounded-2xl bg-white shadow hover:shadow-xl transition-all duration-300 p-5 flex flex-col items-center gap-3 hover:-translate-y-1"
+    >
+      <div
+        className={`w-14 h-14 rounded-2xl flex items-center justify-center ${item.color}`}
+      >
+        <Icon
+          className={item.iconColor}
+          size={28}
+        />
+      </div>
+
+      <h3 className="text-sm font-semibold text-center">
+        {item.title}
+      </h3>
     </Link>
   );
 }

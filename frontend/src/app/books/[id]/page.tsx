@@ -1,83 +1,72 @@
-import Image from "next/image";
+"use client";
 
-import { BOOKS } from "@/constants/books";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import {
+  BookDetails,
+  PDFViewer,
+} from "@/components/books";
+import { BookService } from "@/services/bookService";
 
-import BookInfo from "@/components/books/BookInfo";
+type Book = {
+  id: number;
+  title: string;
+  subject: string;
+  author: string;
+  edition: string;
+  medium: string;
+  pages: number;
+  description: string;
+  cover_image: string;
+  pdf_url: string;
+};
 
-import BookActions from "@/components/books/BookActions";
+export default function BookPage() {
+  const { id } = useParams();
 
-interface Props{
+  const [book, setBook] = useState<Book | null>(null);
 
-    params:Promise<{
+  const [loading, setLoading] = useState(true);
 
-        id:string;
+  useEffect(() => {
+    if (!id) return;
 
-    }>;
+    BookService.getById(Number(id))
+      .then((res) => setBook(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [id]);
 
-}
-
-export default async function BookDetailsPage({
-
-    params
-
-}:Props){
-
-    const {id}=await params;
-
-    const book=BOOKS.find(
-
-        b=>b.id===Number(id)
-
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading Book...
+      </div>
     );
+  }
 
-    if(!book){
-
-        return(
-
-            <div className="p-10">
-
-                Book not found
-
-            </div>
-
-        );
-
-    }
-
-    return(
-
-        <main className="mx-auto max-w-7xl p-8">
-
-            <div className="grid gap-10 lg:grid-cols-2">
-
-                <div className="relative h-[600px]">
-
-                    <Image
-
-                        src={book.cover}
-
-                        alt={book.title}
-
-                        fill
-
-                        className="rounded-3xl object-cover"
-
-                    />
-
-                </div>
-
-                <div>
-
-                    <BookInfo book={book}/>
-
-                    <BookActions/>
-
-                </div>
-
-            </div>
-
-        </main>
-
+  if (!book) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Book not found.
+      </div>
     );
+  }
 
+  return (
+    <main className="bg-slate-100 min-h-screen">
+
+      <div className="max-w-7xl mx-auto p-6">
+
+        <BookDetails book={book} />
+
+        <PDFViewer
+          url={book.pdf_url}
+          bookId={book.id}
+        />
+
+      </div>
+
+    </main>
+  );
 }

@@ -1,2 +1,1 @@
-export { default as QuickActionCard } from "./QuickActionCard";
-export { default as QuickActionsGrid } from "./QuickActionsGrid";
+export { default as QuickActions } from "./QuickActions";
