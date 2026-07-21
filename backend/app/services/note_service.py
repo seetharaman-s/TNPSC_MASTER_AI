@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.models.note import Note
 from app.repositories.note_repository import NoteRepository
 from app.schemas.note import NoteCreate, NoteUpdate
-
+from app.models.user import User
 
 class NoteService:
 
@@ -13,15 +13,18 @@ class NoteService:
     def create_note(
         db: Session,
         note: NoteCreate,
+        current_user: User,
     ) -> Note:
 
-        db_note = Note(**note.model_dump())
+        db_note = Note(
+            **note.model_dump(),
+            user_id=current_user.id,
+        )
 
         return NoteRepository.create(
             db,
             db_note,
         )
-
     @staticmethod
     def get_note(
         db: Session,

@@ -7,7 +7,7 @@ from alembic import context
 
 import os
 from dotenv import load_dotenv
-
+import app.models
 
 
 # this is the Alembic Config object, which provides
@@ -28,7 +28,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.db.base import Base
+from app.db.session import Base
 
 target_metadata = Base.metadata
 

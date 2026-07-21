@@ -1,14 +1,15 @@
 from datetime import datetime, timedelta, timezone
+from uuid import uuid4
 import os
-from typing import Any, Optional
+from typing import Any
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 
-# ------------------------------------------------------------------
+# ==========================================================
 # JWT Configuration
-# ------------------------------------------------------------------
+# ==========================================================
 
 SECRET_KEY = os.getenv(
     "SECRET_KEY",
@@ -17,13 +18,13 @@ SECRET_KEY = os.getenv(
 
 ALGORITHM = "HS256"
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24        # 1 day
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 
-# ------------------------------------------------------------------
+# ==========================================================
 # Password Hashing
-# ------------------------------------------------------------------
+# ==========================================================
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
@@ -45,56 +46,30 @@ def verify_password(
     )
 
 
-# ------------------------------------------------------------------
-# Access Token
-# ------------------------------------------------------------------
+# ==========================================================
+# Internal JWT Helper
+# ==========================================================
 
-def create_access_token(
-    data: dict,
-    expires_delta: Optional[timedelta] = None,
+def _create_token(
+    *,
+    subject: str,
+    token_type: str,
+    expires_delta: timedelta,
+    extra_claims: dict[str, Any] | None = None,
 ) -> str:
 
-    to_encode = data.copy()
+    now = datetime.now(timezone.utc)
 
-    expire = datetime.now(timezone.utc) + (
-        expires_delta
-        or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    )
+    payload = {
+        "sub": subject,
+        "type": token_type,
+        "iat": now,
+        "exp": now + expires_delta,
+        "jti": str(uuid4()),
+    }
 
-    to_encode.update(
-        {
-            "exp": expire,
-            "type": "access",
-        }
-    )
-
-    return jwt.encode(
-        to_encode,
-        SECRET_KEY,
-        algorithm=ALGORITHM,
-    )
-
-
-# ------------------------------------------------------------------
-# Refresh Token
-# ------------------------------------------------------------------
-
-def create_refresh_token(
-    data: dict,
-) -> str:
-
-    expire = datetime.now(timezone.utc) + timedelta(
-        days=REFRESH_TOKEN_EXPIRE_DAYS
-    )
-
-    payload = data.copy()
-
-    payload.update(
-        {
-            "exp": expire,
-            "type": "refresh",
-        }
-    )
+    if extra_claims:
+        payload.update(extra_claims)
 
     return jwt.encode(
         payload,
@@ -103,36 +78,92 @@ def create_refresh_token(
     )
 
 
-# ------------------------------------------------------------------
+# ==========================================================
+# Access Token
+# ==========================================================
+
+def create_access_token(
+    subject: str,
+    extra_claims: dict[str, Any] | None = None,
+) -> str:
+
+    return _create_token(
+        subject=subject,
+        token_type="access",
+        expires_delta=timedelta(
+            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        ),
+        extra_claims=extra_claims,
+    )
+
+
+# ==========================================================
+# Refresh Token
+# ==========================================================
+
+def create_refresh_token(
+    subject: str,
+) -> str:
+
+    return _create_token(
+        subject=subject,
+        token_type="refresh",
+        expires_delta=timedelta(
+            days=REFRESH_TOKEN_EXPIRE_DAYS
+        ),
+    )
+
+
+# ==========================================================
 # Decode Token
-# ------------------------------------------------------------------
+# ==========================================================
 
-def decode_token(
-    token: str,
-) -> Optional[dict]:
+def decode_token(token: str) -> dict[str, Any]:
 
-    try:
-        return jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM],
-        )
-
-    except JWTError:
-        return None
+    return jwt.decode(
+        token,
+        SECRET_KEY,
+        algorithms=[ALGORITHM],
+    )
 
 
-# ------------------------------------------------------------------
-# Extract Subject
-# ------------------------------------------------------------------
+# ==========================================================
+# Token Helpers
+# ==========================================================
 
 def get_token_subject(
     token: str,
-) -> Optional[Any]:
+) -> str:
 
     payload = decode_token(token)
 
-    if not payload:
-        return None
+    return payload["sub"]
 
-    return payload.get("sub")
+
+def get_token_type(
+    token: str,
+) -> str:
+
+    payload = decode_token(token)
+
+    return payload["type"]
+
+
+def is_access_token(
+    token: str,
+) -> bool:
+
+    try:
+        return get_token_type(token) == "access"
+    except JWTError:
+        return False
+
+
+def is_refresh_token(
+    token: str,
+) -> bool:
+
+    try:
+        return get_token_type(token) == "refresh"
+    except JWTError:
+        return False

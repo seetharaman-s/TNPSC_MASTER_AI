@@ -1,4 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+)
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
@@ -7,16 +12,28 @@ from app.schemas.auth import (
     RegisterRequest,
     LoginRequest,
     TokenResponse,
-    UserResponse,
-    ChangePasswordRequest,
-    UpdateProfileRequest,
+    AuthUserResponse
 )
 
 from app.services.auth_service import AuthService
 
-from app.dependencies.auth import get_current_user
+from app.schemas.auth import (
+    RefreshTokenRequest
+)
+
+from app.dependencies.auth import (
+    get_current_user
+)
 
 from app.models.user import User
+
+from app.schemas.auth import (
+    UpdateProfileRequest,
+    ChangePasswordRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+    MessageResponse,
+)
 
 
 router = APIRouter(
@@ -25,13 +42,13 @@ router = APIRouter(
 )
 
 
-# --------------------------------------------------
+# ==========================================================
 # Register
-# --------------------------------------------------
+# ==========================================================
 
 @router.post(
     "/register",
-    response_model=UserResponse,
+    response_model=AuthUserResponse,
     status_code=status.HTTP_201_CREATED,
 )
 def register(
@@ -60,57 +77,134 @@ def register(
         )
 
 
-# --------------------------------------------------
+# ==========================================================
 # Login
-# --------------------------------------------------
+# ==========================================================
 
 @router.post(
     "/login",
     response_model=TokenResponse,
+    status_code=status.HTTP_200_OK,
 )
 def login(
     payload: LoginRequest,
     db: Session = Depends(get_db),
 ):
 
-    result = AuthService.login(
-        db=db,
-        email=payload.email,
-        password=payload.password,
-    )
+    try:
 
-    if result is None:
+        return AuthService.login(
+            db=db,
+            email=payload.email,
+            password=payload.password,
+        )
+
+    except ValueError as exc:
 
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password.",
+            detail=str(exc),
+        )
+    
+    
+
+
+# ==========================================================
+# Refresh Token
+# ==========================================================
+
+@router.post(
+    "/refresh",
+    response_model=TokenResponse,
+    status_code=status.HTTP_200_OK,
+)
+def refresh_token(
+    payload: RefreshTokenRequest,
+    db: Session = Depends(get_db),
+):
+
+    try:
+
+        return AuthService.refresh_token(
+            db=db,
+            refresh_token=payload.refresh_token,
         )
 
-    return result
+    except ValueError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(exc),
+        )
 
 
-# --------------------------------------------------
-# Current User
-# --------------------------------------------------
+# ==========================================================
+# Logout
+# ==========================================================
 
-@router.get(
-    "/me",
-    response_model=UserResponse,
+@router.post(
+    "/logout",
+    status_code=status.HTTP_200_OK,
 )
-def get_me(
+def logout(
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
 
-    return current_user
+    try:
+
+        return AuthService.logout(
+            db=db,
+            user_id=current_user.id,
+        )
+
+    except ValueError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
 
 
-# --------------------------------------------------
+# ==========================================================
+# Current User
+# ==========================================================
+
+@router.get(
+    "/me",
+    response_model=AuthUserResponse,
+    status_code=status.HTTP_200_OK,
+)
+def get_current_user_profile(
+    current_user: User = Depends(get_current_user),
+):
+
+    return AuthUserResponse(
+        id=current_user.id,
+        username=current_user.username,
+        full_name=current_user.full_name,
+        email=current_user.email,
+        phone=current_user.phone,
+        language=current_user.language,
+        theme=current_user.theme,
+        profile_image_url=current_user.profile_image_url,
+        role=current_user.role_name,
+        is_active=current_user.is_active,
+        is_verified=current_user.is_verified,
+        last_login=current_user.last_login,
+        created_at=current_user.created_at,
+        updated_at=current_user.updated_at,
+    )
+
+
+# ==========================================================
 # Update Profile
-# --------------------------------------------------
+# ==========================================================
 
 @router.put(
     "/profile",
-    response_model=UserResponse,
+    response_model=AuthUserResponse,
+    status_code=status.HTTP_200_OK,
 )
 def update_profile(
     payload: UpdateProfileRequest,
@@ -118,19 +212,30 @@ def update_profile(
     current_user: User = Depends(get_current_user),
 ):
 
-    return AuthService.update_profile(
-        db=db,
-        user=current_user,
-        data=payload.model_dump(exclude_unset=True),
-    )
+    try:
+
+        return AuthService.update_profile(
+            db=db,
+            user=current_user,
+            data=payload.model_dump(exclude_unset=True),
+        )
+
+    except ValueError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
 
 
-# --------------------------------------------------
+# ==========================================================
 # Change Password
-# --------------------------------------------------
+# ==========================================================
 
 @router.put(
     "/change-password",
+    response_model=MessageResponse,
+    status_code=status.HTTP_200_OK,
 )
 def change_password(
     payload: ChangePasswordRequest,
@@ -138,34 +243,89 @@ def change_password(
     current_user: User = Depends(get_current_user),
 ):
 
-    success = AuthService.change_password(
-        db=db,
-        user=current_user,
-        old_password=payload.old_password,
-        new_password=payload.new_password,
-    )
+    try:
 
-    if not success:
+        AuthService.change_password(
+            db=db,
+            user=current_user,
+            old_password=payload.old_password,
+            new_password=payload.new_password,
+        )
+
+        return MessageResponse(
+            message="Password changed successfully."
+        )
+
+    except ValueError as exc:
 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Current password is incorrect.",
+            detail=str(exc),
         )
 
-    return {
-        "message": "Password changed successfully."
-    }
 
-
-# --------------------------------------------------
-# Logout
-# --------------------------------------------------
+# ==========================================================
+# Forgot Password
+# ==========================================================
 
 @router.post(
-    "/logout",
+    "/forgot-password",
+    response_model=MessageResponse,
+    status_code=status.HTTP_200_OK,
 )
-def logout():
+def forgot_password(
+    payload: ForgotPasswordRequest,
+    db: Session = Depends(get_db),
+):
 
-    return {
-        "message": "Logout successful. Please remove the access token on the client."
-    }
+    try:
+
+        AuthService.forgot_password(
+            db=db,
+            email=payload.email,
+        )
+
+        return MessageResponse(
+            message="Password reset instructions have been sent if the email exists."
+        )
+
+    except ValueError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
+
+
+# ==========================================================
+# Reset Password
+# ==========================================================
+
+@router.post(
+    "/reset-password",
+    response_model=MessageResponse,
+    status_code=status.HTTP_200_OK,
+)
+def reset_password(
+    payload: ResetPasswordRequest,
+    db: Session = Depends(get_db),
+):
+
+    try:
+
+        AuthService.reset_password(
+            db=db,
+            token=payload.token,
+            new_password=payload.new_password,
+        )
+
+        return MessageResponse(
+            message="Password has been reset successfully."
+        )
+
+    except ValueError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )

@@ -7,8 +7,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-
-from app.db.database import Base
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+from app.db.session import Base
 
 class QuizAttempt(Base):
     __tablename__ = "quiz_attempts"
@@ -16,9 +17,9 @@ class QuizAttempt(Base):
     id = Column(Integer, primary_key=True)
 
     user_id = Column(
-        Integer,
-        ForeignKey("users.id"),
-        nullable=False,
+    UUID(as_uuid=True),
+    ForeignKey("users.id"),
+    nullable=False,
     )
 
     quiz_id = Column(
@@ -52,9 +53,9 @@ class QuizAttempt(Base):
 
     quiz = relationship(
         "Quiz",
-        back_populates="attempts_relation",
+        back_populates="attempts_relation"
     )
 
     user = relationship(
-        "User",
+        "User"
     )

@@ -1,5 +1,7 @@
+from uuid import UUID
 from typing import Optional
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.models.user import User
@@ -8,7 +10,11 @@ from app.models.user import User
 class UserRepository:
 
     @staticmethod
-    def get_by_id(db: Session, user_id: int) -> Optional[User]:
+    def get_by_id(
+        db: Session,
+        user_id: UUID,
+    ) -> Optional[User]:
+
         return (
             db.query(User)
             .filter(User.id == user_id)
@@ -16,7 +22,11 @@ class UserRepository:
         )
 
     @staticmethod
-    def get_by_email(db: Session, email: str) -> Optional[User]:
+    def get_by_email(
+        db: Session,
+        email: str,
+    ) -> Optional[User]:
+
         return (
             db.query(User)
             .filter(User.email == email)
@@ -24,7 +34,11 @@ class UserRepository:
         )
 
     @staticmethod
-    def get_by_username(db: Session, username: str) -> Optional[User]:
+    def get_by_username(
+        db: Session,
+        username: str,
+    ) -> Optional[User]:
+
         return (
             db.query(User)
             .filter(User.username == username)
@@ -32,20 +46,32 @@ class UserRepository:
         )
 
     @staticmethod
-    def create(db: Session, user: User) -> User:
+    def create(
+        db: Session,
+        user: User,
+    ) -> User:
+
         db.add(user)
         db.commit()
         db.refresh(user)
         return user
 
     @staticmethod
-    def update(db: Session, user: User) -> User:
+    def update(
+        db: Session,
+        user: User,
+    ) -> User:
+
         db.commit()
         db.refresh(user)
         return user
 
     @staticmethod
-    def delete(db: Session, user: User):
+    def delete(
+        db: Session,
+        user: User,
+    ):
+
         db.delete(user)
         db.commit()
 
@@ -55,6 +81,7 @@ class UserRepository:
         skip: int = 0,
         limit: int = 100,
     ):
+
         return (
             db.query(User)
             .offset(skip)
@@ -68,7 +95,26 @@ class UserRepository:
         user: User,
         login_time,
     ) -> User:
+
         user.last_login = login_time
         db.commit()
         db.refresh(user)
         return user
+
+    @staticmethod
+    def search(
+        db: Session,
+        keyword: str,
+    ):
+
+        return (
+            db.query(User)
+            .filter(
+                or_(
+                    User.username.ilike(f"%{keyword}%"),
+                    User.full_name.ilike(f"%{keyword}%"),
+                    User.email.ilike(f"%{keyword}%"),
+                )
+            )
+            .all()
+        )

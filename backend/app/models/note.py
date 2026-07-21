@@ -8,8 +8,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.sql import func
 
-from app.db.database import Base
+from app.db.session import Base
+import uuid
 
+from sqlalchemy import ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 class Note(Base):
     __tablename__ = "notes"
@@ -36,6 +40,12 @@ class Note(Base):
 
     language = Column(String(50), default="Tamil")
 
+    user_id = Column(
+    UUID(as_uuid=True),
+    ForeignKey("users.id"),
+    nullable=False,
+    )
+
     featured = Column(Boolean, default=False)
 
     is_active = Column(Boolean, default=True)
@@ -55,6 +65,11 @@ class Note(Base):
         server_default=func.now(),
         onupdate=func.now(),
         nullable=False,
+    )
+
+    user = relationship(
+    "User",
+    back_populates="notes",
     )
 
     def __repr__(self):
