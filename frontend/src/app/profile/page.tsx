@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
       {/* Profile Card */}
 
-      <div className="rounded-2xl border bg-white shadow-sm">
+      <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm">
 
         <div className="p-8">
 
@@ -191,7 +191,7 @@ export default function ProfilePage() {
 
             <div
               key={item.title}
-              className="rounded-2xl border bg-white shadow-sm p-6"
+              className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm p-6"
             >
 
               <div className="flex justify-between">
@@ -237,7 +237,7 @@ export default function ProfilePage() {
 
         {/* Language */}
 
-        <div className="rounded-2xl border bg-white shadow-sm p-8">
+        <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm p-8">
 
           <div className="flex items-center gap-4">
 
@@ -280,7 +280,7 @@ export default function ProfilePage() {
 
         {/* Theme */}
 
-        <div className="rounded-2xl border bg-white shadow-sm p-8">
+        <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm p-8">
 
           <div className="flex items-center gap-4">
 
@@ -329,7 +329,7 @@ export default function ProfilePage() {
 
             {/* Personalized Study Plan */}
 
-      <div className="rounded-2xl border bg-white shadow-sm">
+      <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm">
 
         <div className="border-b p-6">
 
@@ -371,7 +371,7 @@ export default function ProfilePage() {
 
       {/* Target Exam */}
 
-      <div className="rounded-2xl border bg-white shadow-sm p-8">
+      <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm p-8">
 
         <div className="flex items-center gap-4">
 
@@ -417,7 +417,7 @@ export default function ProfilePage() {
 
       {/* Certificates */}
 
-      <div className="rounded-2xl border bg-white shadow-sm">
+      <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm">
 
         <div className="border-b p-6">
 
@@ -462,7 +462,7 @@ export default function ProfilePage() {
 
       {/* Notification Settings */}
 
-      <div className="rounded-2xl border bg-white shadow-sm p-8">
+      <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm p-8">
 
         <h2 className="text-2xl font-bold mb-8">
 
@@ -515,7 +515,7 @@ export default function ProfilePage() {
 
       <div className="grid xl:grid-cols-2 gap-6">
 
-        <div className="rounded-2xl border bg-white shadow-sm p-8">
+        <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm p-8">
 
           <h2 className="text-2xl font-bold">
 
@@ -547,7 +547,7 @@ export default function ProfilePage() {
 
         </div>
 
-        <div className="rounded-2xl border bg-white shadow-sm p-8">
+        <div className="rounded-2xl border bg-white dark:bg-slate-900 shadow-sm p-8">
 
           <h2 className="text-2xl font-bold">
 
@@ -601,7 +601,7 @@ export default function ProfilePage() {
 
           <div className="mt-8 flex flex-wrap gap-4">
 
-            <button className="rounded-xl bg-white px-6 py-3 font-semibold text-indigo-700">
+            <button className="rounded-xl bg-white dark:bg-slate-900 px-6 py-3 font-semibold text-indigo-700">
 
               Download Profile Report
 

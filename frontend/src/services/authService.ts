@@ -30,7 +30,7 @@ export interface ChangePasswordRequest {
 }
 
 export interface User {
-    id: number;
+    id: string; // UUID from FastAPI
     username: string;
     full_name?: string;
     email: string;
@@ -39,7 +39,6 @@ export interface User {
     is_active?: boolean;
     created_at?: string;
 }
-
 /* ============================================================
    Token Keys
 ============================================================ */
@@ -207,9 +206,8 @@ export const AuthService = {
     ======================================================== */
 
     async refreshToken() {
-
-        const refresh =
-            getRefreshToken();
+    try {
+        const refresh = getRefreshToken();
 
         if (!refresh) {
             return null;
@@ -222,14 +220,20 @@ export const AuthService = {
             }
         );
 
-        const newToken =
-            response.data.access_token;
+        const newToken = response.data.access_token;
 
         if (newToken) {
             saveAccessToken(newToken);
         }
 
         return response.data;
+
+    } catch (error) {
+
+        removeTokens();
+        return null;
+
+    }
     },
 
     /* ========================================================
@@ -249,9 +253,9 @@ export const AuthService = {
     ======================================================== */
 
     isAuthenticated() {
-        return !!getAccessToken();
+    const token = getAccessToken();
+    return token !== null && token.length > 0;
     },
-
     /* ========================================================
        Clear Tokens
     ======================================================== */

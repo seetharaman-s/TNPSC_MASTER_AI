@@ -1,5 +1,5 @@
 "use client";
-
+import axios from "axios";
 import {
     createContext,
     useContext,
@@ -64,13 +64,13 @@ export function AuthProvider({
             setUser(profile);
 
         } catch (error) {
-
             console.error(error);
 
-            AuthService.clearTokens();
+            if (axios.isAxiosError(error) && error.response?.status === 401) {
+                AuthService.clearTokens();
+            }
 
             setUser(null);
-
         } finally {
 
             setLoading(false);
@@ -91,9 +91,9 @@ export function AuthProvider({
                 password,
             };
 
-            await AuthService.login(data);
+            const response = await AuthService.login(data);
 
-            await refreshUser();
+            setUser(response.user);
 
             return true;
 

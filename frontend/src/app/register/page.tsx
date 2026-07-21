@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 
 import AuthService from "@/services/authService";
+import axios from "axios";
 
 export default function RegisterPage() {
 
@@ -43,7 +44,7 @@ export default function RegisterPage() {
     }
 
     async function handleSubmit(
-        e: React.FormEvent,
+        e: React.FormEvent<HTMLFormElement>,
     ) {
 
         e.preventDefault();
@@ -96,24 +97,24 @@ export default function RegisterPage() {
 
             }, 1500);
 
-        } catch (err: any) {
-
-            setError(
-                err?.response?.data?.detail ||
-                "Registration failed."
-            );
-
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                setError(
+                    typeof err.response?.data?.detail === "string"
+                        ? err.response.data.detail
+                        : "Registration failed."
+                );
+            } else {
+                setError("Registration failed.");
+            }
         } finally {
-
             setLoading(false);
-
         }
-
-    }
+        }
 
     return (
 
-        <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4">
+        <div className="min-h-screen grid lg:grid-cols-2 bg-slate-100 dark:bg-slate-950">
 
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8">
 
