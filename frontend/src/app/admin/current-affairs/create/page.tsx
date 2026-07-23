@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Save } from "lucide-react";
 
-import { CurrentAffairsService } from "@/services/currentAffairsService";
+import currentAffairsService from "@/services/currentAffairsService";
 
 interface MCQ {
     question: string;
@@ -23,16 +23,16 @@ export default function CreateCurrentAffairPage() {
     const [form, setForm] = useState({
         title: "",
         category: "",
-        language: "Tamil",
-        summary: "",
+        topic: "",
         content: "",
-        cover_image: "",
+        source: "",
         pdf_url: "",
-        published_date: new Date().toISOString().split("T")[0],
-        is_featured: false,
-        is_published: true,
-        tags: "",
-    });
+        image_url: "",
+        publish_date: new Date().toISOString().split("T")[0],
+        language: "Tamil",
+        featured: false,
+        is_active: true,
+        });
 
     const [mcqs, setMcqs] = useState<MCQ[]>([]);
 
@@ -111,14 +111,7 @@ export default function CreateCurrentAffairPage() {
 
             setLoading(true);
 
-            await CurrentAffairsService.create({
-                ...form,
-                tags: form.tags
-                    .split(",")
-                    .map(tag => tag.trim())
-                    .filter(Boolean),
-                mcqs,
-            });
+            await currentAffairsService.create(form);
 
             alert("Current Affair Created Successfully");
 
@@ -210,7 +203,7 @@ export default function CreateCurrentAffairPage() {
                         <input
                             type="date"
                             name="published_date"
-                            value={form.published_date}
+                            value={form.publish_date}
                             onChange={handleChange}
                             className="border rounded-lg p-3"
                         />
@@ -218,7 +211,7 @@ export default function CreateCurrentAffairPage() {
                         <input
                             name="cover_image"
                             placeholder="Cover Image URL"
-                            value={form.cover_image}
+                            value={form.image_url}
                             onChange={handleChange}
                             className="border rounded-lg p-3"
                         />
@@ -231,17 +224,17 @@ export default function CreateCurrentAffairPage() {
                             className="border rounded-lg p-3"
                         />
 
+                        <input
+                            name="topic"
+                            placeholder="Topic"
+                            value={form.topic}
+                            onChange={handleChange}
+                            className="border rounded-lg p-3"
+                        />
+
                     </div>
 
-                    <textarea
-                        name="summary"
-                        rows={3}
-                        placeholder="Summary"
-                        value={form.summary}
-                        onChange={handleChange}
-                        className="mt-5 w-full border rounded-lg p-3"
-                    />
-
+                   
                     <textarea
                         name="content"
                         rows={12}
@@ -253,12 +246,13 @@ export default function CreateCurrentAffairPage() {
                     />
 
                     <input
-                        name="tags"
-                        placeholder="Tags (comma separated)"
-                        value={form.tags}
+                        name="source"
+                        placeholder="Source"
+                        value={form.source}
                         onChange={handleChange}
                         className="mt-5 w-full border rounded-lg p-3"
                     />
+
 
                     <div className="mt-6 flex gap-8">
 
@@ -266,8 +260,8 @@ export default function CreateCurrentAffairPage() {
 
                             <input
                                 type="checkbox"
-                                name="is_featured"
-                                checked={form.is_featured}
+                                name="featured"
+                                checked={form.featured}
                                 onChange={handleChange}
                             />
 
@@ -279,8 +273,8 @@ export default function CreateCurrentAffairPage() {
 
                             <input
                                 type="checkbox"
-                                name="is_published"
-                                checked={form.is_published}
+                                name="published"
+                                checked={form.is_active}
                                 onChange={handleChange}
                             />
 
@@ -292,107 +286,7 @@ export default function CreateCurrentAffairPage() {
 
                 </div>
 
-                {/* TNPSC MCQs */}
-
-                <div className="rounded-2xl bg-white shadow-lg p-6">
-
-                    <div className="flex justify-between items-center mb-6">
-
-                        <h2 className="text-xl font-semibold">
-
-                            Related TNPSC MCQs
-
-                        </h2>
-
-                        <button
-                            type="button"
-                            onClick={addMCQ}
-                            className="rounded-lg bg-green-600 px-4 py-2 text-white"
-                        >
-                            Add MCQ
-                        </button>
-
-                    </div>
-
-                    {mcqs.map((mcq, index) => (
-
-                        <div
-                            key={index}
-                            className="mb-8 rounded-xl border p-5"
-                        >
-
-                            <textarea
-                                rows={2}
-                                placeholder="Question"
-                                value={mcq.question}
-                                onChange={(e) =>
-                                    updateMCQ(
-                                        index,
-                                        "question",
-                                        e.target.value
-                                    )
-                                }
-                                className="w-full border rounded-lg p-3"
-                            />
-
-                            <div className="grid md:grid-cols-2 gap-4 mt-4">
-
-                                {mcq.options.map((option, optionIndex) => (
-
-                                    <input
-                                        key={optionIndex}
-                                        placeholder={`Option ${String.fromCharCode(65 + optionIndex)}`}
-                                        value={option}
-                                        onChange={(e) =>
-                                            updateOption(
-                                                index,
-                                                optionIndex,
-                                                e.target.value
-                                            )
-                                        }
-                                        className="border rounded-lg p-3"
-                                    />
-
-                                ))}
-
-                            </div>
-
-                            <select
-                                value={mcq.correct_answer}
-                                onChange={(e) =>
-                                    updateMCQ(
-                                        index,
-                                        "correct_answer",
-                                        Number(e.target.value)
-                                    )
-                                }
-                                className="mt-4 border rounded-lg p-3"
-                            >
-                                <option value={0}>Option A</option>
-                                <option value={1}>Option B</option>
-                                <option value={2}>Option C</option>
-                                <option value={3}>Option D</option>
-                            </select>
-
-                            <textarea
-                                rows={3}
-                                placeholder="Explanation"
-                                value={mcq.explanation}
-                                onChange={(e) =>
-                                    updateMCQ(
-                                        index,
-                                        "explanation",
-                                        e.target.value
-                                    )
-                                }
-                                className="mt-4 w-full border rounded-lg p-3"
-                            />
-
-                        </div>
-
-                    ))}
-
-                </div>
+        
 
                 <button
                     type="submit"

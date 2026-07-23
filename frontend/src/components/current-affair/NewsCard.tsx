@@ -6,11 +6,13 @@ import { CurrentAffair } from "@/services/currentAffairsService";
 
 interface NewsCardProps {
   article: CurrentAffair;
+  onReadMore?: (article: CurrentAffair) => void;
   onBookmark?: (article: CurrentAffair) => void;
 }
 
 export default function NewsCard({
   article,
+  onReadMore,
   onBookmark,
 }: NewsCardProps) {
   return (
@@ -63,7 +65,7 @@ export default function NewsCard({
 
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4" />
-          {article.publish_date}
+          {new Date(article.publish_date).toLocaleDateString()}
         </div>
 
         <div className="flex items-center gap-2">
@@ -90,6 +92,7 @@ export default function NewsCard({
       <div className="flex flex-wrap gap-3">
 
         <button
+          onClick={() => onReadMore?.(article)}
           className="rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
         >
           Read More

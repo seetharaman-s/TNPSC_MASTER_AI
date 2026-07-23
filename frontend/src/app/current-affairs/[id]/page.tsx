@@ -12,7 +12,7 @@ import {
   Eye,
 } from "lucide-react";
 
-import { CurrentAffairsService as currentAffairService } from "@/services/currentAffairService";
+import currentAffairsService from "@/services/currentAffairsService";
 
 export default function CurrentAffairDetailsPage() {
   const { id } = useParams();
@@ -28,11 +28,9 @@ export default function CurrentAffairDetailsPage() {
 
   async function loadCurrentAffair() {
     try {
-      const response = await currentAffairService.getById(
-        Number(id)
-      );
+      const response = await currentAffairsService.getById(Number(id));
 
-      setAffair(response.data);
+      setAffair(response);
     } catch (error) {
       console.error(error);
     } finally {
@@ -91,7 +89,7 @@ export default function CurrentAffairDetailsPage() {
 
         <div className="flex items-center gap-2">
           <Calendar size={18} />
-          {affair.publish_date}
+           {new Date(affair.publish_date).toLocaleDateString()}
         </div>
 
         <div className="flex items-center gap-2">
@@ -126,6 +124,42 @@ export default function CurrentAffairDetailsPage() {
           Source
         </a>
       )}
+
+      {affair.topic && (
+        <div className="mt-2 text-gray-600">
+          Topic: <span className="font-medium">{affair.topic}</span>
+        </div>
+      )}
+
+      {affair.featured && (
+        <span className="ml-3 rounded-full bg-yellow-100 px-3 py-1 text-sm text-yellow-700">
+          ⭐ Featured
+        </span>
+      )}
+
+      <div className="mt-4">
+        <span
+          className={`rounded-full px-3 py-1 text-sm ${
+            affair.is_active
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {affair.is_active ? "Active" : "Inactive"}
+        </span>
+      </div>
+
+      <a
+        href={affair.pdf_url}
+        target="_blank"
+        rel="noopener noreferrer"
+      ></a>
+
+      <a
+        href={affair.source}
+        target="_blank"
+        rel="noopener noreferrer"
+      ></a>
 
     </div>
   );

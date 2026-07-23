@@ -10,7 +10,7 @@ import {
   Navigation,
   QuestionPalette,
   SubmitDialog,
-} from "@/components/quiz";
+} from "@/components/quizzes";
 
 import { QuizService } from "@/services/quizService";
 

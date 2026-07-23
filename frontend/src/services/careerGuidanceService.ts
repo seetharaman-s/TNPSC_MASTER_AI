@@ -60,6 +60,7 @@ export interface Motivation {
   quote: string;
   author: string;
   study_tip: string;
+  streak_days?: number;
   productivity_score: number;
   consistency_streak: number;
 }

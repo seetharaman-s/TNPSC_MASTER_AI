@@ -34,8 +34,7 @@ export default function ReaderPage() {
   return (
     <div className="h-screen w-full">
       <PDFViewer
-        file={`http://127.0.0.1:8000${book.pdf_url}`}
-        title={book.title}
+        pdfUrl={`http://127.0.0.1:8000${book.pdf_url}`}
       />
     </div>
   );

@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 
 import CurrentAffairGrid from "@/components/current-affair/CurrentAffairGrid";
-import { CurrentAffairsService } from "@/services/currentAffairService";
+import currentAffairsService from "@/services/currentAffairsService";
 
-const currentAffairService = new CurrentAffairsService();
 
 export default function MonthlyCurrentAffairsPage() {
-  const [affairs, setAffairs] = useState([]);
+  const [affairs, setAffairs] = useState<any[]>([]);
 
   useEffect(() => {
     loadData();
@@ -16,9 +15,9 @@ export default function MonthlyCurrentAffairsPage() {
 
   async function loadData() {
     try {
-      const res = await currentAffairService.getLatest(200);
+      const res = await currentAffairsService.getLatest(200);
 
-      const monthly = res.data.filter((item: any) => {
+      const monthly = res.filter((item: any) => {
         const publish = new Date(item.publish_date);
         const now = new Date();
 

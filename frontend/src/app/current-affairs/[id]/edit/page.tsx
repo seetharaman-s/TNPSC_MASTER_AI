@@ -4,31 +4,36 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import CurrentAffairForm from "@/components/admin/current-affairs/CurrentAffairForm";
-import { CurrentAffairService } from "@/services/currentAffairService";
+import currentAffairsService, {
+  CurrentAffair,
+} from "@/services/currentAffairsService";
 
 export default function EditCurrentAffairPage() {
-
+  const [error, setError] = useState("");
   const params = useParams();
   const router = useRouter();
 
-  const [item, setItem] = useState<any>();
+  const [item, setItem] = useState<CurrentAffair | null>(null);
+  
+  const id = Number(params.id);
 
   useEffect(() => {
     loadItem();
-  }, []);
+  }, [id]);
 
   async function loadItem() {
     try {
-      const res = await CurrentAffairService.getById(params.id);
-      setItem(res.data);
+      const item = await currentAffairsService.getById(id);
+      setItem(item);
     } catch (error) {
       console.error(error);
+      setError("Unable to load current affair.");
     }
   }
 
   async function submit(data: any) {
     try {
-      await CurrentAffairService.update(params.id, data);
+      await currentAffairsService.update(id, data);
 
       router.push("/admin/current-affairs");
       router.refresh();

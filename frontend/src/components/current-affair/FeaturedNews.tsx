@@ -78,7 +78,7 @@ const FeaturedNews: React.FC<FeaturedNewsProps> = ({
               </p>
 
               <div className="mt-6 flex items-center justify-between text-sm text-gray-500">
-                <span>{article.publish_date}</span>
+                <span>{new Date(article.publish_date).toLocaleDateString()}</span>
 
                 <span>👁 {article.views}</span>
               </div>

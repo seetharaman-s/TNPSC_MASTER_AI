@@ -1,4 +1,4 @@
-import Skeleton from "./Skeleton";
+import Skeleton from "./Spinner";
 
 export default function CardSkeleton() {
   return (

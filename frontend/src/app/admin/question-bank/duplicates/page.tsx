@@ -194,7 +194,7 @@ export default function DuplicateDetectionPage() {
 
                         <p className="text-gray-500">
 
-                            High Similarity (>95%)
+                            High Similarity (&gt;95%)
 
                         </p>
 

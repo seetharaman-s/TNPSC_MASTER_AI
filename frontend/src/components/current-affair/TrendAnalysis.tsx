@@ -8,13 +8,12 @@ import {
 } from "lucide-react";
 
 import {
-  AITrendAnalysis,
+  TrendAnalysis as TrendAnalysisType,
 } from "@/services/currentAffairsService";
 
 interface TrendAnalysisProps {
-  analysis: AITrendAnalysis;
+  analysis: TrendAnalysisType;
 }
-
 export default function TrendAnalysis({
   analysis,
 }: TrendAnalysisProps) {

@@ -12,7 +12,7 @@ import SummaryCards from "./cards/SummaryCards";
 import ContinueReading from "./continue-learning/ContinueReading";
 import WeeklyProgress from "./progress/WeeklyProgress";
 
-import RecentQuiz from "../quiz/RecentQuiz";
+import RecentQuiz from "../quizzes/RecentQuiz";
 
 import { DashboardService } from "@/services/dashboardService";
 

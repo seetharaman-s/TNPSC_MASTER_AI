@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
+import Link from "next/link";
 import {
   CurrentAffairsAPI,
   Dashboard,
@@ -237,10 +237,12 @@ export default function CurrentAffairsPage() {
 
             {filteredArticles.length > 0 ? (
               filteredArticles.map((article) => (
-                <ArticleCard
+                <Link
                   key={article.id}
-                  article={article}
-                />
+                  href={`/current-affairs/${article.id}`}
+                >
+                  <ArticleCard article={article} />
+                </Link>
               ))
             ) : (
               <div className="rounded-xl bg-white dark:bg-slate-900 shadow p-6 text-gray-500">
@@ -277,10 +279,12 @@ export default function CurrentAffairsPage() {
 
                   {subject.articles.map((article: CurrentAffair) => (
 
-                    <ArticleMiniCard
+                    <Link
                       key={article.id}
-                      article={article}
-                    />
+                      href={`/current-affairs/${article.id}`}
+                    >
+                      <ArticleMiniCard article={article} />
+                    </Link>
 
                   ))}
 
@@ -501,7 +505,7 @@ function ArticleCard({
 
         <span>•</span>
 
-        <span>{article.publish_date}</span>
+        <span>{new Date(article.publish_date).toLocaleDateString()}</span>
 
       </div>
 
@@ -547,7 +551,7 @@ function ArticleMiniCard({
 
         <span>{article.category}</span>
 
-        <span>{article.publish_date}</span>
+        <span>{new Date(article.publish_date).toLocaleDateString()}</span>
 
       </div>
 

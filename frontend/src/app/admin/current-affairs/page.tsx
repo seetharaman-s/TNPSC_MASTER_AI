@@ -13,16 +13,21 @@ import {
     Calendar,
 } from "lucide-react";
 
-import { CurrentAffairsService } from "@/services/currentAffairsService";
+import currentAffairsService from "@/services/currentAffairsService";
 
 interface CurrentAffair {
     id: number;
     title: string;
     category: string;
     language: string;
-    published_date: string;
-    is_featured: boolean;
-    is_published: boolean;
+    publish_date: string;
+    featured: boolean;
+    is_active: boolean;
+    topic?: string;
+    views: number;
+    image_url?: string;
+    source?: string;
+    pdf_url?: string;
 }
 
 export default function CurrentAffairsPage() {
@@ -43,9 +48,8 @@ export default function CurrentAffairsPage() {
 
             setLoading(true);
 
-            const response = await CurrentAffairsService.getAll();
-
-            setArticles(response.data);
+            const articles = await currentAffairsService.getAll();
+            setArticles(articles);
 
         } catch (error) {
 
@@ -65,7 +69,7 @@ export default function CurrentAffairsPage() {
 
         try {
 
-            await CurrentAffairsService.delete(id);
+            await currentAffairsService.delete(id);
 
             loadArticles();
 
@@ -279,7 +283,7 @@ export default function CurrentAffairsPage() {
 
                                             {article.title}
 
-                                            {article.is_featured && (
+                                            {article.featured && (
 
                                                 <Star
                                                     size={16}
@@ -310,7 +314,7 @@ export default function CurrentAffairsPage() {
 
                                             <Calendar size={16} />
 
-                                            {article.published_date}
+                                            {new Date(article.publish_date).toLocaleDateString()}
 
                                         </div>
 
@@ -320,15 +324,15 @@ export default function CurrentAffairsPage() {
 
                                         <span
                                             className={`rounded-full px-3 py-1 text-sm ${
-                                                article.is_published
+                                                article.is_active
                                                     ? "bg-green-100 text-green-700"
                                                     : "bg-yellow-100 text-yellow-700"
                                             }`}
                                         >
 
-                                            {article.is_published
-                                                ? "Published"
-                                                : "Draft"}
+                                            {article.is_active
+                                                ? "Active"
+                                                : "Inactive"}
 
                                         </span>
 

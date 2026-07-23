@@ -526,7 +526,9 @@ export default function VersionHistoryPage() {
 
                     </div>
 
-                                    {/* Restore Version */}
+                </div>
+
+                {/* Restore Version */}
 
                 <div className="bg-white rounded-xl shadow mt-8">
 
@@ -745,5 +747,4 @@ export default function VersionHistoryPage() {
         </div>
 
     );
-
 }

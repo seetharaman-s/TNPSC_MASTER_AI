@@ -458,7 +458,7 @@ export default function ExamPage() {
           ].map(([title, completed]) => (
 
             <div
-              key={title}
+              key={String(title)}
               className="rounded-xl border p-5 text-center"
             >
 

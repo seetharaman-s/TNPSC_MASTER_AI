@@ -50,7 +50,7 @@ export default function CategoriesPage() {
             const response =
                 await CurrentAffairsCategoryService.getAll();
 
-            setCategories(response.data);
+            setCategories(response);
 
         } catch (error) {
 

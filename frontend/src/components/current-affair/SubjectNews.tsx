@@ -7,14 +7,14 @@ import {
   Newspaper,
 } from "lucide-react";
 
-import {
-  SubjectWiseCurrentAffairs,
+import type {
+  SubjectNews,
 } from "@/services/currentAffairsService";
 
 import NewsCard from "./NewsCard";
 
 interface SubjectNewsProps {
-  subjects: SubjectWiseCurrentAffairs[];
+  subjects: SubjectNews[];
 }
 
 export default function SubjectNews({

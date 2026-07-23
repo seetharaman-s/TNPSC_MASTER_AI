@@ -425,7 +425,7 @@ export default function AchievementsPage() {
           ].map(([title, completed]) => (
 
             <div
-              key={title}
+              key={String(title)}
               className={`rounded-xl border p-5 text-center ${
                 completed
                   ? "bg-green-50 border-green-300"

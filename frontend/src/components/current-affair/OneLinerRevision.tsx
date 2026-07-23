@@ -7,12 +7,10 @@ import {
   ClipboardCopy,
 } from "lucide-react";
 
-import {
-  OneLinerRevision as Revision,
-} from "@/services/currentAffairsService";
+import { OneLiner } from "@/services/currentAffairsService";
 
 interface OneLinerRevisionProps {
-  revisions: Revision[];
+  revisions: OneLiner[];
 }
 
 export default function OneLinerRevision({
@@ -88,14 +86,14 @@ export default function OneLinerRevision({
             <div className="mb-4 flex items-center justify-between">
 
               <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                {item.category}
+                {item.language ?? "General"}
               </span>
 
               <button
                 onClick={() =>
                   copyFact(
                     item.id,
-                    item.fact
+                    item.text
                   )
                 }
                 className="rounded-lg p-2 transition hover:bg-gray-100"
@@ -117,7 +115,7 @@ export default function OneLinerRevision({
             </div>
 
             <p className="leading-7 text-gray-700">
-              {item.fact}
+              {item.text}
             </p>
 
           </div>

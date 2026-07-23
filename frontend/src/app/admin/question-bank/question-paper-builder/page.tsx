@@ -244,247 +244,308 @@ export default function QuestionPaperBuilderPage() {
 
                 </div>
 
-                "use client";
+                                {/* Blueprint Builder */}
 
-import { useState } from "react";
-import Link from "next/link";
-import {
-    ArrowLeft,
-    FileText,
-    Wand2,
-    Plus,
-    Settings,
-    Save,
-    Eye,
-    Download,
-    Shuffle,
-    BookOpen
-} from "lucide-react";
+                <div className="bg-white rounded-xl shadow mt-8">
 
-export default function QuestionPaperBuilderPage() {
+                    <div className="p-6 border-b flex justify-between items-center">
 
-    const [paperTitle, setPaperTitle] = useState("TNPSC Group IV Model Test");
+                        <div>
 
-    const [examType, setExamType] = useState("Group IV");
+                            <h2 className="text-2xl font-bold flex items-center gap-2">
 
-    const [language, setLanguage] = useState("Tamil");
+                                <BookOpen size={22} />
 
-    const [totalQuestions, setTotalQuestions] = useState(100);
+                                Blueprint Builder
 
-    const [totalMarks, setTotalMarks] = useState(100);
+                            </h2>
 
-    const [duration, setDuration] = useState(90);
+                            <p className="text-gray-500 mt-2">
 
-    const [negativeMarking, setNegativeMarking] = useState(false);
+                                Configure subject-wise question distribution.
 
-    const [shuffleQuestions, setShuffleQuestions] = useState(true);
+                            </p>
 
-    const [shuffleOptions, setShuffleOptions] = useState(true);
+                        </div>
 
-    return (
+                        <button className="bg-blue-600 text-white px-5 py-3 rounded-lg flex items-center gap-2">
 
-        <div className="min-h-screen bg-gray-50 p-6">
+                            <Plus size={18} />
 
-            <div className="max-w-7xl mx-auto">
+                            Add Blueprint
 
-                {/* Header */}
+                        </button>
 
-                <div className="flex justify-between items-center mb-8">
+                    </div>
 
-                    <div>
+                    <div className="overflow-x-auto">
 
-                        <h1 className="text-3xl font-bold flex items-center gap-3">
+                        <table className="min-w-full">
 
-                            <FileText />
+                            <thead className="bg-gray-100">
 
-                            Question Paper Builder
+                                <tr>
 
-                        </h1>
+                                    <th className="text-left p-4">Subject</th>
+                                    <th className="text-left p-4">Unit</th>
+                                    <th className="text-left p-4">Topic</th>
+                                    <th className="text-left p-4">Questions</th>
+                                    <th className="text-left p-4">Marks</th>
+                                    <th className="text-left p-4">Difficulty</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr className="border-t">
+
+                                    <td className="p-4">History</td>
+
+                                    <td className="p-4">Ancient India</td>
+
+                                    <td className="p-4">Sangam Age</td>
+
+                                    <td className="p-4">
+
+                                        <input
+                                            type="number"
+                                            defaultValue={15}
+                                            className="w-24 border rounded-lg p-2"
+                                        />
+
+                                    </td>
+
+                                    <td className="p-4">
+
+                                        <input
+                                            type="number"
+                                            defaultValue={15}
+                                            className="w-24 border rounded-lg p-2"
+                                        />
+
+                                    </td>
+
+                                    <td className="p-4">
+
+                                        <select className="border rounded-lg p-2">
+
+                                            <option>Easy</option>
+                                            <option>Medium</option>
+                                            <option>Hard</option>
+
+                                        </select>
+
+                                    </td>
+
+                                </tr>
+
+                                <tr className="border-t">
+
+                                    <td className="p-4">Polity</td>
+
+                                    <td className="p-4">Constitution</td>
+
+                                    <td className="p-4">Fundamental Rights</td>
+
+                                    <td className="p-4">
+
+                                        <input
+                                            type="number"
+                                            defaultValue={20}
+                                            className="w-24 border rounded-lg p-2"
+                                        />
+
+                                    </td>
+
+                                    <td className="p-4">
+
+                                        <input
+                                            type="number"
+                                            defaultValue={20}
+                                            className="w-24 border rounded-lg p-2"
+                                        />
+
+                                    </td>
+
+                                    <td className="p-4">
+
+                                        <select className="border rounded-lg p-2">
+
+                                            <option>Medium</option>
+                                            <option>Easy</option>
+                                            <option>Hard</option>
+
+                                        </select>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                {/* AI Paper Generation */}
+
+                <div className="bg-white rounded-xl shadow mt-8">
+
+                    <div className="p-6 border-b">
+
+                        <h2 className="text-2xl font-bold flex items-center gap-2">
+
+                            <Wand2 className="text-indigo-600" />
+
+                            AI Paper Generator
+
+                        </h2>
 
                         <p className="text-gray-500 mt-2">
 
-                            Create professional TNPSC question papers using AI and predefined blueprints.
+                            Automatically generate a balanced question paper.
 
                         </p>
 
                     </div>
 
-                    <Link
-                        href="/admin/question-bank"
-                        className="border rounded-lg px-4 py-2 flex items-center gap-2"
-                    >
-                        <ArrowLeft size={18} />
-                        Back
-                    </Link>
+                    <div className="grid md:grid-cols-3 gap-6 p-6">
+
+                        <div>
+
+                            <label className="block mb-2">
+
+                                Difficulty Distribution
+
+                            </label>
+
+                            <select className="w-full border rounded-lg p-3">
+
+                                <option>40% Easy / 40% Medium / 20% Hard</option>
+                                <option>30% Easy / 50% Medium / 20% Hard</option>
+                                <option>Custom</option>
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <label className="block mb-2">
+
+                                Bloom's Taxonomy
+
+                            </label>
+
+                            <select className="w-full border rounded-lg p-3">
+
+                                <option>Balanced</option>
+                                <option>Remember</option>
+                                <option>Understand</option>
+                                <option>Apply</option>
+                                <option>Analyze</option>
+                                <option>Evaluate</option>
+                                <option>Create</option>
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <label className="block mb-2">
+
+                                Paper Sets
+
+                            </label>
+
+                            <select className="w-full border rounded-lg p-3">
+
+                                <option>1 Set</option>
+                                <option>2 Sets (A/B)</option>
+                                <option>4 Sets (A/B/C/D)</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <div className="flex flex-wrap gap-4 px-6 pb-6">
+
+                        <button className="bg-indigo-600 text-white px-6 py-3 rounded-lg flex items-center gap-2">
+
+                            <Wand2 size={18} />
+
+                            Generate Paper
+
+                        </button>
+
+                        <button className="border px-6 py-3 rounded-lg flex items-center gap-2">
+
+                            <Shuffle size={18} />
+
+                            Randomize Questions
+
+                        </button>
+
+                    </div>
 
                 </div>
 
-                {/* Paper Configuration */}
+                {/* Live Paper Summary */}
 
-                <div className="bg-white rounded-xl shadow p-6">
+                <div className="grid md:grid-cols-4 gap-6 mt-8">
 
-                    <div className="flex items-center gap-3 mb-6">
+                    <div className="bg-white rounded-xl shadow p-6 text-center">
 
-                        <Settings size={22} />
+                        <p className="text-gray-500">Questions</p>
 
-                        <h2 className="text-2xl font-bold">
+                        <h2 className="text-4xl font-bold text-blue-600 mt-2">
 
-                            Paper Configuration
+                            {totalQuestions}
 
                         </h2>
 
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="bg-white rounded-xl shadow p-6 text-center">
 
-                        <div>
+                        <p className="text-gray-500">Marks</p>
 
-                            <label className="block mb-2">
+                        <h2 className="text-4xl font-bold text-green-600 mt-2">
 
-                                Paper Title
+                            {totalMarks}
 
-                            </label>
-
-                            <input
-                                value={paperTitle}
-                                onChange={(e)=>setPaperTitle(e.target.value)}
-                                className="w-full border rounded-lg p-3"
-                            />
-
-                        </div>
-
-                        <div>
-
-                            <label className="block mb-2">
-
-                                Exam
-
-                            </label>
-
-                            <select
-                                value={examType}
-                                onChange={(e)=>setExamType(e.target.value)}
-                                className="w-full border rounded-lg p-3"
-                            >
-                                <option>Group I</option>
-                                <option>Group II</option>
-                                <option>Group IIA</option>
-                                <option>Group IV</option>
-                                <option>VAO</option>
-                            </select>
-
-                        </div>
-
-                        <div>
-
-                            <label className="block mb-2">
-
-                                Language
-
-                            </label>
-
-                            <select
-                                value={language}
-                                onChange={(e)=>setLanguage(e.target.value)}
-                                className="w-full border rounded-lg p-3"
-                            >
-                                <option>Tamil</option>
-                                <option>English</option>
-                                <option>Bilingual</option>
-                            </select>
-
-                        </div>
-
-                        <div>
-
-                            <label className="block mb-2">
-
-                                Total Questions
-
-                            </label>
-
-                            <input
-                                type="number"
-                                value={totalQuestions}
-                                onChange={(e)=>setTotalQuestions(Number(e.target.value))}
-                                className="w-full border rounded-lg p-3"
-                            />
-
-                        </div>
-
-                        <div>
-
-                            <label className="block mb-2">
-
-                                Total Marks
-
-                            </label>
-
-                            <input
-                                type="number"
-                                value={totalMarks}
-                                onChange={(e)=>setTotalMarks(Number(e.target.value))}
-                                className="w-full border rounded-lg p-3"
-                            />
-
-                        </div>
-
-                        <div>
-
-                            <label className="block mb-2">
-
-                                Duration (Minutes)
-
-                            </label>
-
-                            <input
-                                type="number"
-                                value={duration}
-                                onChange={(e)=>setDuration(Number(e.target.value))}
-                                className="w-full border rounded-lg p-3"
-                            />
-
-                        </div>
+                        </h2>
 
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6 mt-8">
+                    <div className="bg-white rounded-xl shadow p-6 text-center">
 
-                        <label className="flex items-center gap-3">
+                        <p className="text-gray-500">Duration</p>
 
-                            <input
-                                type="checkbox"
-                                checked={negativeMarking}
-                                onChange={(e)=>setNegativeMarking(e.target.checked)}
-                            />
+                        <h2 className="text-4xl font-bold text-purple-600 mt-2">
 
-                            Enable Negative Marking
+                            {duration}
 
-                        </label>
+                        </h2>
 
-                        <label className="flex items-center gap-3">
+                    </div>
 
-                            <input
-                                type="checkbox"
-                                checked={shuffleQuestions}
-                                onChange={(e)=>setShuffleQuestions(e.target.checked)}
-                            />
+                    <div className="bg-white rounded-xl shadow p-6 text-center">
 
-                            Shuffle Questions
+                        <p className="text-gray-500">Language</p>
 
-                        </label>
+                        <h2 className="text-2xl font-bold text-orange-600 mt-3">
 
-                        <label className="flex items-center gap-3">
+                            {language}
 
-                            <input
-                                type="checkbox"
-                                checked={shuffleOptions}
-                                onChange={(e)=>setShuffleOptions(e.target.checked)}
-                            />
-
-                            Shuffle Options
-
-                        </label>
+                        </h2>
 
                     </div>
 

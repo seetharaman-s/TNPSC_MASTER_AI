@@ -503,8 +503,9 @@ export default function AIQuestionGeneratorPage() {
                         )}
 
                     </div>
+                </div>
 
-                                    {/* AI Insights */}
+                {/* AI Insights */}
 
                 <div className="grid lg:grid-cols-3 gap-6 mt-8">
 

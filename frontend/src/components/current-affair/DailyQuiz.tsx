@@ -10,11 +10,11 @@ import {
 } from "lucide-react";
 
 import {
-  DailyQuizQuestion,
+  QuizQuestion,
 } from "@/services/currentAffairsService";
 
 interface DailyQuizProps {
-  questions: DailyQuizQuestion[];
+  questions: QuizQuestion[];
 }
 
 export default function DailyQuiz({

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import CurrentAffairForm from "@/components/admin/current-affairs/CurrentAffairForm";
-import { CurrentAffairService } from "@/services/currentAffairService";
+import currentAffairsService from "@/services/currentAffairsService";
 
 export default function CreateCurrentAffairPage() {
 
@@ -11,7 +11,7 @@ export default function CreateCurrentAffairPage() {
 
   async function submit(data: any) {
 
-    await CurrentAffairService.create(data);
+    await currentAffairsService.create(data);
 
     router.push("/admin/current-affairs");
 

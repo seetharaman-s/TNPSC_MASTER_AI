@@ -822,9 +822,9 @@ export default function QuestionReviewPage() {
 
               <p>GET /api/v1/review/questions</p>
 
-              <p>GET /api/v1/review/{id}</p>
+              <p>GET /api/v1/review/{"{id}"}</p>
 
-              <p>PUT /api/v1/review/{id}</p>
+              <p>PUT /api/v1/review/{"{id}"}</p>
 
               <p>POST /api/v1/review/comment</p>
 

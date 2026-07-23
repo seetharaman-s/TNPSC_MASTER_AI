@@ -793,8 +793,8 @@ export default function BlueprintManagerPage() {
 
                             <p>GET /api/v1/blueprints</p>
                             <p>POST /api/v1/blueprints</p>
-                            <p>PUT /api/v1/blueprints/{id}</p>
-                            <p>DELETE /api/v1/blueprints/{id}</p>
+                            <p>PUT /api/v1/blueprints/{"{id}"}</p>
+                            <p>DELETE /api/v1/blueprints/{"{id}"}</p>
                             <p>POST /api/v1/blueprints/validate</p>
 
                         </div>

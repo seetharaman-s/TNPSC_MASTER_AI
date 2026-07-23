@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-import QuizForm from "@/components/admin/quizzes/QuizForm";
+import QuizForm from "@/components/admin/quiz/QuizForm";
 import { QuizService } from "@/services/quizService";
 
 export default function EditQuizPage() {
 
   const params = useParams();
   const router = useRouter();
-
+  const id = Number(params.id);
   const [quiz, setQuiz] = useState<any>();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function EditQuizPage() {
 
   async function loadQuiz() {
     try {
-      const res = await QuizService.getById(params.id);
+      const res = await QuizService.getById(id);
       setQuiz(res.data);
     } catch (error) {
       console.error(error);
@@ -28,7 +28,7 @@ export default function EditQuizPage() {
 
   async function submit(data: any) {
     try {
-      await QuizService.update(params.id, data);
+      await QuizService.update(id, data);
 
       router.push("/admin/quizzes");
       router.refresh();

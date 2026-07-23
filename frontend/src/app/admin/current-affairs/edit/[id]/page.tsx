@@ -10,7 +10,7 @@ import {
     Plus,
 } from "lucide-react";
 
-import { CurrentAffairsService } from "@/services/currentAffairsService";
+import currentAffairsService from "@/services/currentAffairsService";
 
 interface MCQ {
     question: string;
@@ -20,18 +20,17 @@ interface MCQ {
 }
 
 interface CurrentAffairForm {
-    title: string;
-    category: string;
-    language: string;
-    summary: string;
-    content: string;
-    cover_image: string;
-    pdf_url: string;
-    published_date: string;
-    is_featured: boolean;
-    is_published: boolean;
-    tags: string;
-    mcqs: MCQ[];
+  title: string;
+  category: string;
+  topic: string;
+  content: string;
+  source: string;
+  pdf_url: string;
+  image_url: string;
+  publish_date: string;
+  language: string;
+  featured: boolean;
+  is_active: boolean;
 }
 
 export default function EditCurrentAffairPage() {
@@ -43,18 +42,17 @@ export default function EditCurrentAffairPage() {
     const [saving, setSaving] = useState(false);
 
     const [form, setForm] = useState<CurrentAffairForm>({
-        title: "",
-        category: "",
-        language: "Tamil",
-        summary: "",
-        content: "",
-        cover_image: "",
-        pdf_url: "",
-        published_date: "",
-        is_featured: false,
-        is_published: true,
-        tags: "",
-        mcqs: [],
+    title: "",
+    category: "",
+    topic: "",
+    content: "",
+    source: "",
+    pdf_url: "",
+    image_url: "",
+    publish_date: "",
+    language: "Tamil",
+    featured: false,
+    is_active: true,
     });
 
     useEffect(() => {
@@ -65,17 +63,23 @@ export default function EditCurrentAffairPage() {
 
         try {
 
-            const response = await CurrentAffairsService.getById(Number(id));
+            const response = await currentAffairsService.getById(Number(id));
 
-            const data = response.data;
+            const data = response;
 
             setForm({
-                ...data,
-                tags: Array.isArray(data.tags)
-                    ? data.tags.join(", ")
-                    : "",
-                mcqs: data.mcqs || [],
-            });
+                title: data.title,
+                category: data.category,
+                topic: data.topic ?? "",
+                content: data.content,
+                source: data.source ?? "",
+                pdf_url: data.pdf_url ?? "",
+                image_url: data.image_url ?? "",
+                publish_date: data.publish_date,
+                language: data.language,
+                featured: data.featured,
+                is_active: data.is_active,
+                });
 
         } catch (error) {
 
@@ -109,68 +113,8 @@ export default function EditCurrentAffairPage() {
 
     }
 
-    function addMCQ() {
+    
 
-        setForm({
-            ...form,
-            mcqs: [
-                ...form.mcqs,
-                {
-                    question: "",
-                    options: ["", "", "", ""],
-                    correct_answer: 0,
-                    explanation: "",
-                },
-            ],
-        });
-
-    }
-
-    function removeMCQ(index: number) {
-
-        setForm({
-            ...form,
-            mcqs: form.mcqs.filter((_, i) => i !== index),
-        });
-
-    }
-
-    function updateMCQ(
-        index: number,
-        field: keyof MCQ,
-        value: any
-    ) {
-
-        const copy = [...form.mcqs];
-
-        copy[index] = {
-            ...copy[index],
-            [field]: value,
-        };
-
-        setForm({
-            ...form,
-            mcqs: copy,
-        });
-
-    }
-
-    function updateOption(
-        mcqIndex: number,
-        optionIndex: number,
-        value: string
-    ) {
-
-        const copy = [...form.mcqs];
-
-        copy[mcqIndex].options[optionIndex] = value;
-
-        setForm({
-            ...form,
-            mcqs: copy,
-        });
-
-    }
 
     async function handleSubmit(
         e: React.FormEvent
@@ -182,17 +126,7 @@ export default function EditCurrentAffairPage() {
 
             setSaving(true);
 
-            await CurrentAffairsService.update(
-                Number(id),
-                {
-                    ...form,
-                    tags: form.tags
-                        .split(",")
-                        .map(tag => tag.trim())
-                        .filter(Boolean),
-                }
-            );
-
+            await currentAffairsService.update(Number(id), form);
             alert("Article Updated Successfully");
 
             router.push("/admin/current-affairs");
@@ -282,20 +216,12 @@ export default function EditCurrentAffairPage() {
                         <input
                             type="date"
                             name="published_date"
-                            value={form.published_date}
+                            value={form.publish_date}
                             onChange={handleChange}
                             className="border rounded-lg p-3"
                         />
 
                     </div>
-
-                    <textarea
-                        rows={3}
-                        name="summary"
-                        value={form.summary}
-                        onChange={handleChange}
-                        className="mt-5 w-full border rounded-lg p-3"
-                    />
 
                     <textarea
                         rows={12}
@@ -307,7 +233,7 @@ export default function EditCurrentAffairPage() {
 
                     <input
                         name="cover_image"
-                        value={form.cover_image}
+                        value={form.image_url}
                         onChange={handleChange}
                         className="mt-5 w-full border rounded-lg p-3"
                         placeholder="Cover Image URL"
@@ -321,13 +247,6 @@ export default function EditCurrentAffairPage() {
                         placeholder="PDF URL"
                     />
 
-                    <input
-                        name="tags"
-                        value={form.tags}
-                        onChange={handleChange}
-                        className="mt-5 w-full border rounded-lg p-3"
-                        placeholder="Comma separated tags"
-                    />
 
                     <div className="flex gap-8 mt-5">
 
@@ -335,8 +254,8 @@ export default function EditCurrentAffairPage() {
 
                             <input
                                 type="checkbox"
-                                name="is_featured"
-                                checked={form.is_featured}
+                                name="featured"
+                                checked={form.featured}
                                 onChange={handleChange}
                             />
 
@@ -348,8 +267,8 @@ export default function EditCurrentAffairPage() {
 
                             <input
                                 type="checkbox"
-                                name="is_published"
-                                checked={form.is_published}
+                                name="is_active"
+                                checked={form.is_active}
                                 onChange={handleChange}
                             />
 
@@ -371,51 +290,8 @@ export default function EditCurrentAffairPage() {
 
                         </h2>
 
-                        <button
-                            type="button"
-                            onClick={addMCQ}
-                            className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg"
-                        >
-                            <Plus size={18}/>
-                            Add MCQ
-                        </button>
 
                     </div>
-
-                    {form.mcqs.map((mcq, index) => (
-
-                        <div
-                            key={index}
-                            className="border rounded-xl p-5 mb-6"
-                        >
-
-                            <div className="flex justify-between">
-
-                                <h3>
-
-                                    Question {index + 1}
-
-                                </h3>
-
-                                <button
-                                    type="button"
-                                    onClick={() => removeMCQ(index)}
-                                    className="text-red-600"
-                                >
-                                    <Trash2 size={18}/>
-                                </button>
-
-                            </div>
-
-                            {/* Same MCQ editor as Create Page */}
-                            {/* Question */}
-                            {/* Options */}
-                            {/* Correct Answer */}
-                            {/* Explanation */}
-
-                        </div>
-
-                    ))}
 
                 </div>
 

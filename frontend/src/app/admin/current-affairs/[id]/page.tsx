@@ -17,7 +17,9 @@ import {
     CheckCircle2,
 } from "lucide-react";
 
-import { CurrentAffairsService } from "@/services/currentAffairsService";
+import currentAffairsService, {
+  CurrentAffair,
+} from "@/services/currentAffairsService";
 
 interface MCQ {
     question: string;
@@ -26,21 +28,6 @@ interface MCQ {
     explanation: string;
 }
 
-interface CurrentAffair {
-    id: number;
-    title: string;
-    category: string;
-    language: string;
-    summary: string;
-    content: string;
-    cover_image: string;
-    pdf_url: string;
-    published_date: string;
-    is_featured: boolean;
-    is_published: boolean;
-    tags: string[];
-    mcqs: MCQ[];
-}
 
 export default function CurrentAffairDetailsPage() {
 
@@ -60,9 +47,9 @@ export default function CurrentAffairDetailsPage() {
         try {
 
             const response =
-                await CurrentAffairsService.getById(Number(id));
+                await currentAffairsService.getById(Number(id));
 
-            setArticle(response.data);
+            setArticle(response);
 
         } catch (error) {
 
@@ -84,7 +71,7 @@ export default function CurrentAffairDetailsPage() {
 
         try {
 
-            await CurrentAffairsService.delete(article.id);
+            await currentAffairsService.delete(article.id);
 
             router.push("/admin/current-affairs");
 
@@ -160,15 +147,16 @@ export default function CurrentAffairDetailsPage() {
 
             </div>
 
-            {article.cover_image && (
+            {article.image_url && (
 
                 <img
-                    src={article.cover_image}
+                    src={article.image_url}
                     alt={article.title}
                     className="w-full h-96 rounded-2xl object-cover shadow-lg mb-8"
                 />
 
             )}
+
 
             <div className="bg-white rounded-2xl shadow-lg p-8">
 
@@ -186,7 +174,7 @@ export default function CurrentAffairDetailsPage() {
 
                             <span className="flex items-center gap-2">
                                 <Calendar size={16}/>
-                                {article.published_date}
+                                {new Date(article.publish_date).toLocaleDateString()}
                             </span>
 
                             <span className="flex items-center gap-2">
@@ -203,7 +191,13 @@ export default function CurrentAffairDetailsPage() {
 
                     </div>
 
-                    {article.is_featured && (
+                    <div className="flex items-center gap-2">
+                    <Tag size={16} />
+                    {article.topic || "-"}
+                    </div>
+
+
+                    {article.featured && (
 
                         <span className="flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full">
 
@@ -216,21 +210,6 @@ export default function CurrentAffairDetailsPage() {
 
                 </div>
 
-                <div className="mt-8">
-
-                    <h2 className="text-2xl font-semibold mb-3">
-
-                        Summary
-
-                    </h2>
-
-                    <p className="text-gray-700 leading-8">
-
-                        {article.summary}
-
-                    </p>
-
-                </div>
 
                 <div className="mt-10">
 
@@ -248,34 +227,11 @@ export default function CurrentAffairDetailsPage() {
 
                 </div>
 
-                {article.tags?.length > 0 && (
-
-                    <div className="mt-10">
-
-                        <h2 className="text-xl font-semibold mb-3">
-
-                            Tags
-
-                        </h2>
-
-                        <div className="flex flex-wrap gap-3">
-
-                            {article.tags.map(tag => (
-
-                                <span
-                                    key={tag}
-                                    className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full flex items-center gap-2"
-                                >
-                                    <Tag size={14}/>
-                                    {tag}
-                                </span>
-
-                            ))}
-
-                        </div>
-
-                    </div>
-
+                {article.source && (
+                <div className="mt-6">
+                    <h3 className="font-semibold">Source</h3>
+                    <p>{article.source}</p>
+                </div>
                 )}
 
                 {article.pdf_url && (
@@ -296,82 +252,22 @@ export default function CurrentAffairDetailsPage() {
 
                 )}
 
+                <span
+                className={`rounded-full px-3 py-1 text-sm ${
+                    article.is_active
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+                >
+                {article.is_active ? "Active" : "Inactive"}
+                </span>
+
+                <div className="mt-6">
+                <strong>Views:</strong> {article.views}
+                </div>
+
             </div>
 
-            {article.mcqs?.length > 0 && (
-
-                <section className="mt-10">
-
-                    <h2 className="text-3xl font-bold mb-6">
-
-                        Related TNPSC MCQs
-
-                    </h2>
-
-                    <div className="space-y-6">
-
-                        {article.mcqs.map((mcq, index) => (
-
-                            <div
-                                key={index}
-                                className="bg-white rounded-2xl shadow p-6"
-                            >
-
-                                <h3 className="font-semibold text-lg mb-5">
-
-                                    Q{index + 1}. {mcq.question}
-
-                                </h3>
-
-                                <div className="grid md:grid-cols-2 gap-4">
-
-                                    {mcq.options.map((option, i) => (
-
-                                        <div
-                                            key={i}
-                                            className={`rounded-lg border p-4 ${
-                                                i === mcq.correct_answer
-                                                    ? "bg-green-100 border-green-500"
-                                                    : ""
-                                            }`}
-                                        >
-                                            <strong>
-                                                {String.fromCharCode(65 + i)}.
-                                            </strong>{" "}
-                                            {option}
-                                        </div>
-
-                                    ))}
-
-                                </div>
-
-                                <div className="mt-5 bg-blue-50 rounded-lg p-4">
-
-                                    <div className="flex items-center gap-2 font-semibold">
-
-                                        <CheckCircle2 size={18}/>
-
-                                        Explanation
-
-                                    </div>
-
-                                    <p className="mt-2">
-
-                                        {mcq.explanation}
-
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        ))}
-
-                    </div>
-
-                </section>
-
-            )}
 
         </main>
 
